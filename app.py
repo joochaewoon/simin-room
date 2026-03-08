@@ -19,13 +19,12 @@ ADMIN_PASSWORD = "admin1234"
 def connect_to_sheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     try:
-        # [핵심 수정] 파일 대신 Streamlit Secrets에 저장된 딕셔너리를 직접 사용합니다.
-        # Streamlit Cloud의 Secrets 칸에 [gcp_service_account] 항목이 있어야 합니다.
+        # Streamlit Cloud의 Secrets 사용
         if "gcp_service_account" in st.secrets:
             creds_dict = st.secrets["gcp_service_account"]
             creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         else:
-            # 로컬 테스트용 (파일이 있을 때만 작동)
+            # 로컬 테스트용
             creds = ServiceAccountCredentials.from_json_keyfile_name("secrets.json", scope)
             
         client = gspread.authorize(creds)
@@ -109,17 +108,19 @@ if sheet:
                 st.markdown("<h1 style='font-size:40px; margin:15px 0 0 0;'>⬢</h1>", unsafe_allow_html=True)
 
         with col_title:
+            # color 고정값을 제거하여 테마에 대응하도록 수정
             st.markdown("""
                 <div style="margin-left: -15px; padding-top: 15px;">
-                    <p style='font-size:16px; color:#1e3a8a; font-weight:700; margin-bottom: -12px; letter-spacing:-0.5px;'>심인고등학교</p>
-                    <h1 style='font-size:36px; font-weight:900; color:#111827; letter-spacing:-1.5px; margin-top: 0; line-height: 1.1;'>자습실 예약 시스템</h1>
+                    <p style='font-size:16px; font-weight:700; margin-bottom: -12px; letter-spacing:-0.5px; opacity: 0.8;'>심인고등학교</p>
+                    <h1 style='font-size:36px; font-weight:900; letter-spacing:-1.5px; margin-top: 0; line-height: 1.1;'>자습실 예약 시스템</h1>
                 </div>
             """, unsafe_allow_html=True)
         
+        # 이용 수칙 박스: 배경색을 반투명하게 처리하여 다크모드 대응
         st.markdown("""
-            <div style="background-color: #fff9db; padding: 15px; border-left: 5px solid #fcc419; border-radius: 4px; margin: 15px 0 25px 0;">
-                <span style="font-weight: bold; color: #856404;"> 이용 수칙:</span> 
-                <span style="color: #856404;">반드시 본인의 좌석을 예약한 후 이용해 주세요.</span>
+            <div style="background-color: rgba(252, 196, 25, 0.1); padding: 15px; border-left: 5px solid #fcc419; border-radius: 4px; margin: 15px 0 25px 0;">
+                <span style="font-weight: bold; color: #fcc419;"> 이용 수칙:</span> 
+                <span>반드시 본인의 좌석을 예약한 후 이용해 주세요.</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -191,4 +192,5 @@ if sheet:
                     st.toast("퇴실 완료!")
                     go_to("MAIN")
 
-st.markdown("<br><br><center style='color:gray; font-size:12px;'>심인고등학교 자습실 관리 시스템</center>", unsafe_allow_html=True)
+# 하단 푸터 색상도 자동 조절되도록 수정
+st.markdown("<br><br><center style='opacity:0.5; font-size:12px;'>심인고등학교 자습실 관리 시스템</center>", unsafe_allow_html=True)
